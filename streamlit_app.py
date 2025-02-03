@@ -36,14 +36,11 @@ if st.sidebar.button("Predict"):
                             float(fbs), float(restecg), float(thalach), float(exang),
                             float(oldpeak), float(slope), float(ca), float(thal)]], dtype=np.float32)
 
-    # Convert to DMatrix format (XGBoost expects structured numerical input)
-    dmatrix_input = xgb.DMatrix(input_data)
+    # Make prediction without using DMatrix (for XGBClassifier)
+    prediction = model.predict(input_data)[0]
 
-    # Make prediction
-    prediction = model.predict(dmatrix_input)
-
-    # Convert output to binary classification (rounding in case of probabilities)
-    predicted_class = int(round(prediction[0]))
+    # Convert output to binary classification
+    predicted_class = int(round(prediction))
 
     # Display result
     st.write(f"### 🔍 Prediction: {'⚠️ High Risk of Heart Disease' if predicted_class == 1 else '✅ Low Risk'}")
