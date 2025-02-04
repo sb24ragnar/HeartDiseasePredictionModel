@@ -34,8 +34,11 @@ if st.sidebar.button("Predict"):
 
     input_data = np.array([[float(age), float(sex), float(cp), float(trestbps), float(chol),
                             float(fbs), float(restecg), float(thalach), float(exang),
-                            float(oldpeak), float(slope), float(ca), float(thal)]], dtype=np.float32)
+                            float(oldpeak), float(slope), float(ca), float(thal),
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], dtype=np.float32)  # Placeholder values
 
+    # Make sure shape matches model expectations
+    print("Input Data Shape:", input_data.shape)  # Should be (1, 23)
     # Make prediction without using DMatrix (for XGBClassifier)
     prediction = model.predict(input_data)
 
