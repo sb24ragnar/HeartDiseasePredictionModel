@@ -43,7 +43,8 @@ if st.sidebar.button("Predict"):
     prediction = model.predict(input_data)
 
     # Convert output to binary classification
-    predicted_class = int(round(prediction))
+    predicted_class = int(round(float(prediction[0])))
+
 
     # Display result
     st.write(f"### 🔍 Prediction: {'⚠️ High Risk of Heart Disease' if predicted_class == 1 else '✅ Low Risk'}")
