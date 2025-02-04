@@ -32,6 +32,12 @@ sex = 1 if sex == "Male" else 0
 if st.sidebar.button("Predict"):
     # Convert input data to NumPy array (Ensure float type)
     # Ensure all input features are collected and converted to float
+    import numpy as np
+
+    # Ensure input features are collected and converted to float
+    import numpy as np
+
+    # Ensure input features are collected and converted to float
     input_data = np.array([[float(age), float(sex), float(cp), float(trestbps), float(chol),
                             float(fbs), float(restecg), float(thalach), float(exang),
                             float(oldpeak), float(slope), float(ca), float(thal)]], dtype=np.float32)
