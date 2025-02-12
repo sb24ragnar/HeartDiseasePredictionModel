@@ -15,7 +15,13 @@ columns = [
     'age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang',
     'oldpeak', 'slope', 'ca', 'thal', 'target'
 ]
-heart_df = pd.read_csv(url, names=columns)
+
+try:
+    heart_df = pd.read_csv(url, names=columns)
+    print("✅ Dataset loaded successfully!")
+except Exception as e:
+    print(f"❌ Error loading dataset: {e}")
+    exit()
 
 # Replace '?' with NaN and convert necessary columns to numeric
 heart_df.replace('?', np.nan, inplace=True)
@@ -28,13 +34,22 @@ heart_df.fillna(heart_df.median(), inplace=True)
 # One-Hot Encoding for categorical variables
 heart_df = pd.get_dummies(heart_df, columns=['cp', 'restecg', 'slope', 'thal', 'sex'])
 
-# Define Features (X) and Target (y)
-X = heart_df.drop(columns=['target'])
+# Ensure column order is consistent across multiple runs
+feature_columns = [col for col in heart_df.columns if col != 'target']
+X = heart_df[feature_columns]  # Features
 y = heart_df['target'].apply(lambda x: 1 if x > 0 else 0)  # Convert to binary classification
+
+# Print class distribution before balancing
+print("\nBefore SMOTE - Class Distribution:")
+print(y.value_counts())
 
 # Balance the dataset using SMOTE
 smote = SMOTE(random_state=42)
 X_balanced, y_balanced = smote.fit_resample(X, y)
+
+# Print class distribution after SMOTE
+print("\nAfter SMOTE - Class Distribution:")
+print(y_balanced.value_counts())
 
 # Split Data into Training & Test Sets
 X_train, X_test, y_train, y_test = train_test_split(X_balanced, y_balanced, test_size=0.2, random_state=42, stratify=y_balanced)
@@ -62,12 +77,19 @@ xgb_model.fit(X_train_scaled, y_train)
 
 # Predict and Evaluate Model
 y_pred_xgb = xgb_model.predict(X_test_scaled)
-print("XGBoost Model Performance:")
+print("\n🔍 XGBoost Model Performance:")
 print(classification_report(y_test, y_pred_xgb))
-print(f"Accuracy: {accuracy_score(y_test, y_pred_xgb):.4f}")
+print(f"📊 Accuracy: {accuracy_score(y_test, y_pred_xgb):.4f}")
 
 # Save the trained model
 with open("heart_disease_model.pkl", "wb") as model_file:
     pickle.dump(xgb_model, model_file)
 
-print("✅ Model and scaler saved successfully!")
+# Feature Importance Analysis
+feature_importances = pd.DataFrame({"Feature": X.columns, "Importance": xgb_model.feature_importances_})
+feature_importances = feature_importances.sort_values(by="Importance", ascending=False)
+
+print("\n🔹 Top 10 Important Features:")
+print(feature_importances.head(10))
+
+print("\n✅ Model and scaler saved successfully!")
