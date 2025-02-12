@@ -109,7 +109,16 @@ st.markdown(
 )
 st.markdown(
     """
-    <div style="text-align: right; font-size: 14px; color: grey;">
+    <style>
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 15px;
+            font-size: 14px;
+            color: grey;
+        }
+    </style>
+    <div class="footer">
         Developed by <b>Your Name</b>
     </div>
     """,
