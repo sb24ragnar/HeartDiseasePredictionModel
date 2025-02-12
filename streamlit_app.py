@@ -105,6 +105,13 @@ st.markdown(
     """
     **📌 Note:** This model is built using **Machine Learning** and may not be 100% accurate.  
     For medical concerns, please consult a **qualified healthcare professional**.  
-    **Developed by:** SK
     """
+)
+st.markdown(
+    """
+    <div style="text-align: right; font-size: 14px; color: grey;">
+        Developed by <b>Your Name</b>
+    </div>
+    """,
+    unsafe_allow_html=True
 )
