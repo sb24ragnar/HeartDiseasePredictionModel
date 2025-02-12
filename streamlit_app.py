@@ -13,7 +13,7 @@ with open("scaler.pkl", "rb") as scaler_file:
 # Define expected feature columns (Must match training)
 expected_features = [
     'age', 'trestbps', 'chol', 'fbs', 'thalach', 'exang', 'oldpeak', 'ca',
-    'cp_0', 'cp_1', 'cp_2','restecg_0', 'restecg_1', 'restecg_2',
+    'cp_0', 'cp_1', 'cp_2', 'restecg_0', 'restecg_1', 'restecg_2',
     'slope_0', 'slope_1', 'slope_2', 'thal_0', 'thal_1', 'thal_2', 'thal_3',
     'sex_0', 'sex_1'
 ]
@@ -75,15 +75,29 @@ input_data_scaled = scaler.transform(input_data.to_numpy(dtype=np.float32))
 
 # Prediction Button
 if st.sidebar.button("🩺 Predict"):
-    prediction = model.predict(input_data_scaled)
-    predicted_class = int(round(float(prediction[0])))
+    prediction_prob = model.predict_proba(input_data_scaled)[0][1]  # Get probability of disease risk (class 1)
 
-    # Display result
-    st.subheader("🔍 Prediction Result:")
-    if predicted_class == 1:
-        st.error("⚠️ **High Risk of Heart Disease! Consult a Doctor.**")
+    # Categorize risk based on probability
+    if prediction_prob < 0.01:
+        risk_level = "🟢 **No Risk** (0%)"
+        st.success("✅ **No signs of heart disease detected!**")
+    elif prediction_prob < 0.34:
+        risk_level = "🟡 **Low Risk** (1% - 33%)"
+        st.warning("⚠️ **Mild risk detected. Regular health checkups recommended.**")
+    elif prediction_prob < 0.67:
+        risk_level = "🟠 **Moderate Risk** (34% - 66%)"
+        st.warning("⚠️ **Moderate risk. Consider lifestyle changes and medical consultation.**")
+    elif prediction_prob < 1.0:
+        risk_level = "🔴 **High Risk** (67% - 99%)"
+        st.error("⚠️ **High risk! Medical consultation is strongly advised.**")
     else:
-        st.success("✅ **No Signs of Heart Disease Detected!**")
+        risk_level = "🚨 **Critical Risk! Immediate action needed!**"
+        st.error("🚨 **Immediate medical attention required!**")
+
+    # Display Prediction Results
+    st.subheader("🔍 Prediction Result:")
+    st.write(f"### {risk_level}")
+    st.write(f"📊 **Predicted Risk Probability:** {prediction_prob:.2%}")
 
 # Footer Section
 st.markdown("---")
@@ -91,6 +105,6 @@ st.markdown(
     """
     **📌 Note:** This model is built using **Machine Learning** and may not be 100% accurate.  
     For medical concerns, please consult a **qualified healthcare professional**.  
-    **Developed by:** [Your Name]
+    **Developed by:** SK
     """
 )
