@@ -104,7 +104,7 @@ st.markdown("---")
 st.markdown(
     """
     **📌 Note:** This model is built using **Machine Learning** and may not be 100% accurate.  
-    For medical concerns, please consult a **qualified healthcare professional**.  
+    For medical concerns, please consult a ***qualified healthcare professional***.  
     """
 )
 st.markdown(
