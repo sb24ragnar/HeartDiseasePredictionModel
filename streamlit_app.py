@@ -119,7 +119,7 @@ st.markdown(
         }
     </style>
     <div class="footer">
-        Developed by <b>Your Name</b>
+        Developed by <b>@ragnarsk</b>
     </div>
     """,
     unsafe_allow_html=True
