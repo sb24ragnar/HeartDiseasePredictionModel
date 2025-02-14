@@ -3,14 +3,14 @@ import pickle
 import numpy as np
 import pandas as pd
 
-# Load trained model and scaler
+#trained model and scaler file loading
 with open("heart_disease_model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
 
 with open("scaler.pkl", "rb") as scaler_file:
     scaler = pickle.load(scaler_file)
 
-# Define expected feature columns (Must match training)
+# Defining expected feature columns (Must match training)
 expected_features = [
     'age', 'trestbps', 'chol', 'fbs', 'thalach', 'exang', 'oldpeak', 'ca',
     'cp_0', 'cp_1', 'cp_2', 'restecg_0', 'restecg_1', 'restecg_2',
@@ -44,10 +44,10 @@ slope = st.sidebar.selectbox("Slope of the Peak Exercise ST Segment", [0, 1, 2],
 ca = st.sidebar.number_input("Number of Major Vessels (0-4)", 0, 4, value=0)
 thal = st.sidebar.selectbox("Thalassemia Type", [0, 1, 2, 3], index=2)
 
-# Create DataFrame to match training feature format
+#DataFrame to match traing feature format
 input_data = pd.DataFrame(columns=expected_features)
 
-# Assign user inputs to DataFrame
+#user inputs to DataFrame
 input_data.loc[0, 'age'] = age
 input_data.loc[0, 'trestbps'] = trestbps
 input_data.loc[0, 'chol'] = chol
@@ -57,27 +57,27 @@ input_data.loc[0, 'exang'] = exang
 input_data.loc[0, 'oldpeak'] = oldpeak
 input_data.loc[0, 'ca'] = ca
 
-# Encode categorical variables correctly
+
 input_data.loc[0, f'cp_{cp}'] = 1
 input_data.loc[0, f'restecg_{restecg}'] = 1
 input_data.loc[0, f'slope_{slope}'] = 1
 input_data.loc[0, f'thal_{thal}'] = 1
 input_data.loc[0, f'sex_{0 if sex == "Female" else 1}'] = 1
 
-# Fill missing columns with 0 (Ensures correct feature count)
+# Filling missing columns with 0 (Ensures correct feature count that's why)
 input_data.fillna(0, inplace=True)
 
-# Ensure input_data matches training features
+# Ensures input_data matches training features
 input_data = input_data.reindex(columns=expected_features, fill_value=0)
 
-# Convert to NumPy and apply scaling
+# Converting to NumPy and apply scaling
 input_data_scaled = scaler.transform(input_data.to_numpy(dtype=np.float32))
 
 # Prediction Button
 if st.sidebar.button("🩺 Predict"):
     prediction_prob = model.predict_proba(input_data_scaled)[0][1]  # Get probability of disease risk (class 1)
 
-    # Categorize risk based on probability
+    # Categorisation risk based on probability
     if prediction_prob < 0.01:
         risk_level = "🟢 **No Risk** (0%)"
         st.success("✅ **No signs of heart disease detected!**")
@@ -94,12 +94,12 @@ if st.sidebar.button("🩺 Predict"):
         risk_level = "🚨 **Critical Risk! Immediate action needed!**"
         st.error("🚨 **Immediate medical attention required!**")
 
-    # Display Prediction Results
+    # Prediction Results(O/P)
     st.subheader("🔍 Prediction Result:")
     st.write(f"### {risk_level}")
     st.write(f"📊 **Predicted Risk Probability:** {prediction_prob:.2%}")
 
-# Footer Section
+# Footer
 st.markdown("---")
 st.markdown(
     """
